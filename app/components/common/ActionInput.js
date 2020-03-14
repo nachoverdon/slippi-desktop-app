@@ -11,12 +11,16 @@ export default class ActionInput extends Component {
     label: PropTypes.string,
     description: PropTypes.node,
     error: PropTypes.bool,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.string,
     defaultValue: PropTypes.string,
     useFormInput: PropTypes.bool,
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func,
     onChange: PropTypes.func,
-    handlerParams: PropTypes.arrayOf(PropTypes.any).isRequired,
+    handlerParams: PropTypes.arrayOf(PropTypes.any),
+    showButton: PropTypes.bool,
+    inputType: PropTypes.string,
+    readOnly: PropTypes.bool,
+    minMax: PropTypes.object,
   };
 
   static defaultProps = {
@@ -27,7 +31,12 @@ export default class ActionInput extends Component {
     defaultValue: undefined,
     description: "Description",
     showLabelDescription: true,
+    showButton: true,
+    inputType: "text",
+    readOnly: true,
+    minMax: undefined,
     onChange: () => {},
+    onClick: () => {},
   };
 
   clickHandler = () => {
@@ -37,6 +46,7 @@ export default class ActionInput extends Component {
   };
 
   changeHandler = (event, data) => {
+    data.handlerParams = this.props.handlerParams;
     this.props.onChange(event, data);
   };
 
@@ -46,7 +56,7 @@ export default class ActionInput extends Component {
     );
 
     const innerInput = (
-      <input type="text" value={this.props.value} readOnly={true} />
+      <input type={this.props.inputType} value={this.props.value} readOnly={this.props.readOnly} />
     );
 
     const inputProps = {
@@ -54,9 +64,11 @@ export default class ActionInput extends Component {
       label: this.props.showLabelDescription ? undefined : this.props.label,
       fluid: true,
       error: this.props.error,
-      action: actionButton,
+      action: this.props.showButton ? actionButton : undefined,
       input: innerInput,
       defaultValue: this.props.defaultValue,
+      min: this.props.minMax && this.props.minMax.min !== undefined ? this.props.minMax.min : undefined,
+      max: this.props.minMax && this.props.minMax.max !== undefined ? this.props.minMax.max : undefined,
       onChange: this.changeHandler,
     };
 

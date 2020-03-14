@@ -126,7 +126,7 @@ export function validateISO() {
     } catch (err) {
       // Do nothing
     }
-  
+
     if (!fileStats) {
       dispatch({
         type: ISO_VALIDATION_COMPLETE,
@@ -144,7 +144,7 @@ export function validateISO() {
       });
       return;
     }
-   
+
     const hash = crypto.createHash('sha1');
     const input = fs.createReadStream(isoPath);
 
@@ -174,12 +174,12 @@ export function validateISO() {
       if (data) {
         hash.update(data);
         return;
-      } 
+      }
 
       // Reading complete, check hash
       const resultHash = hash.digest('hex');
       const isValidISO = _.get(ISOHashes, resultHash) || "unknown";
-      
+
       isoStateLocalCache[cacheKey] = isValidISO;
 
       dispatch({
@@ -202,4 +202,18 @@ export function openDolphin() {
       dispatch(errorAction);
     });
   };
+}
+
+export function saveSettings(event, data) {
+  return (dispatch, getState) => {
+
+    if (data.handlerParams.length > 0) {
+      const fieldName = data.handlerParams[0];
+
+      getState().settings.settings[fieldName] = data.value;
+      electronSettings.set('settings.' + fieldName, data.value);
+
+    }
+
+  }
 }

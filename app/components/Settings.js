@@ -145,7 +145,7 @@ export default class Settings extends Component {
       loading = false;
       break;
     }
-    
+
     return (
       <div className={`${styles['iso-version-check']} ${styles[validationState]}`}>
         <span className={styles['iso-verify-text']}>{text}</span>
@@ -229,7 +229,7 @@ export default class Settings extends Component {
 
   renderPlaybackInstanceInput() {
     const store = this.props.store || {};
-    
+
     const platform = process.platform;
 
     // If on Linux, indicate the steps required
@@ -288,6 +288,110 @@ export default class Settings extends Component {
     );
   }
 
+  renderObsSettings() {
+    const inputs = [];
+
+    const obsSettingsDescription = (
+      <div>
+        In order to use the recording function, <a href="https://obsproject.com/">OBS Studio </a>
+        must be installed on the machine. Additionally,
+        <a href="https://github.com/Palakis/obs-websocket"> OBS Websocket Plugin </a>
+        must also be installed.
+      </div>
+    );
+
+    inputs.push([
+      this.renderObsPathSettings(),
+      this.renderObsWebsocketSettings()
+    ]);
+
+    if (_.isEmpty(inputs)) {
+      // Don't show advanced toggle if there are no
+      // advanced inputs
+      return null;
+    }
+
+    return (
+      <div className={styles['section']}>
+        <Header inverted={true}>Recording Settings</Header>
+        <LabelDescription
+          label=''
+          description={obsSettingsDescription}
+        />
+        <SpacedGroup direction="vertical" size="lg">
+          {inputs}
+        </SpacedGroup>
+      </div>
+    );
+  }
+
+  renderObsPathSettings() {
+    const store = this.props.store || {};
+
+    return (
+      <div key="obsSettings">
+        <SpacedGroup customColumns="1fr auto">
+          <ActionInput
+            showLabelDescription={true}
+            label="OBS Path"
+            description="Path to your OBS executable"
+            value={store.settings.obsPath}
+            onClick={this.props.browseFile}
+            handlerParams={['obsPath']}
+            readOnly={false}
+          />
+        </SpacedGroup>
+      </div>
+    );
+  }
+
+  renderObsWebsocketSettings() {
+    const store = this.props.store || {};
+
+    return (
+      <div key="obsWebSocketSettings">
+        <SpacedGroup customColumns="1fr 1fr 1fr">
+          <ActionInput
+            showLabelDescription={false}
+            defaultValue={store.settings.obsScene}
+            showButton={false}
+            label="Scene"
+            description="Name of the OBS scene"
+            showLabelDescription={true}
+            readOnly={false}
+            onChange={this.props.saveSettings}
+            handlerParams={['obsScene']}
+          />
+          <ActionInput
+            showLabelDescription={false}
+            defaultValue={store.settings.obsPort}
+            showButton={false}
+            label="Port"
+            description="OBS WebSocket port"
+            showLabelDescription={true}
+            readOnly={false}
+            onChange={this.props.saveSettings}
+            handlerParams={['obsPort']}
+            inputType="number"
+            minMax={{min: 0, max: 65535}}
+          />
+          <ActionInput
+            showLabelDescription={false}
+            defaultValue={store.settings.obsPassword}
+            showButton={false}
+            label="Password"
+            description="OBS WebSocket password"
+            showLabelDescription={true}
+            inputType="password"
+            readOnly={false}
+            onChange={this.props.saveSettings}
+            handlerParams={['obsPassword']}
+          />
+        </SpacedGroup>
+      </div>
+    );
+  }
+
   renderActions() {
     return (
       <div className={styles['section']}>
@@ -307,6 +411,7 @@ export default class Settings extends Component {
         {this.renderLinuxNotif()}
         {this.renderBasicSettings()}
         {this.renderAdvancedSettings()}
+        {this.renderObsSettings()}
         {this.renderActions()}
       </div>
     );

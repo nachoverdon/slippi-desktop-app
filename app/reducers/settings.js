@@ -2,7 +2,7 @@ import _ from 'lodash';
 import semver from 'semver';
 import electronSettings from 'electron-settings';
 
-import { 
+import {
   SELECT_FOLDER, SELECT_FILE, ISO_VALIDATION_START, ISO_VALIDATION_COMPLETE,
 } from '../actions/settings';
 import DolphinManager from '../domain/DolphinManager';
@@ -31,6 +31,22 @@ function getAvailableSettings() {
       location: 'settings.playbackDolphinPath',
       defaultValue: getDolphinPath(),
     },
+    obsPath: {
+      location: 'settings.obsPath',
+      defaultValue: "",
+    },
+    obsPort: {
+      location: 'settings.obsPort',
+      defaultValue: "4444",
+    },
+    obsPassword: {
+      location: 'settings.obsPassword',
+      defaultValue: "1234",
+    },
+    obsScene: {
+      location: 'settings.obsScene',
+      defaultValue: "Slippi",
+    },
   };
 }
 
@@ -58,7 +74,7 @@ function fixSettingsOnNewVersion() {
   // This doesn't get the right version when developing. It should
   // in prod though
   const currentVersion = app.getVersion()
-  
+
   if (!prevVersion && semver.gte(currentVersion, '1.1.10')) {
     // If not on linux, let's clear that setting. We are doing this
     // because the previous settings page would set it to the default

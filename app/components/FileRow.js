@@ -10,8 +10,11 @@ import styles from './FileRow.scss';
 import SpacedGroup from './common/SpacedGroup';
 import PlayerChiclet from './common/PlayerChiclet';
 import * as timeUtils from '../utils/time';
+import electronSettings from 'electron-settings';
 
 const path = require('path');
+const process = require('process');
+const child_process = require('child_process');
 
 export default class FileRow extends Component {
   static propTypes = {
@@ -33,6 +36,58 @@ export default class FileRow extends Component {
     // Play the file
     this.props.playFile(file);
   };
+
+  recordWithObs = (e) => {
+    e.stopPropagation();
+
+    const file = this.props.file || {};
+    /*
+      TODO:
+        - Check if OBS is open and notify if the user.
+        - Open OBS
+        - Open Dolphin
+        - Play file
+        - Start recording once the file starts playing
+        - Stop recording when replay ends
+    */
+
+    const obsProcess = this.launchObsProcess();
+
+    if (!obsProcess) return;
+
+    this.props.playFile(file);
+  }
+
+  launchObsProcess = () => {
+    const currentWorkingDirectory = process.cwd();
+    const obsPath = electronSettings.get('settings.obsPath');
+
+    // TODO: Show notification telling the user to configure OBS
+    if (!obsPath) {
+      this.showObsNeedsConfigurationNotification();
+
+      return null;
+    }
+
+    try {
+      process.chdir(path.dirname(obsPath));
+
+      const obsProcess = child_process.execFile(obsPath);
+
+      process.chdir(currentWorkingDirectory);
+
+      return obsProcess;
+    } catch (err) {
+      this.showObsNeedsConfigurationNotification();
+
+      return null;
+    }
+  }
+
+  // TODO: Show notification telling the user to configure OBS
+  showObsNeedsConfigurationNotification = () => {
+    console.log("Couldn't open OBS. Please, check your configuration.");
+  }
 
   onSelect = () => {
     this.props.onSelect(this.props.file);
@@ -215,8 +270,16 @@ export default class FileRow extends Component {
               onClick={this.viewStats}
             />
           </Link>
+          <Button
+            circular={true}
+            inverted={true}
+            size="tiny"
+            basic={true}
+            icon="video"
+            onClick={this.recordWithObs}
+          />
         </SpacedGroup>
-        
+
       </Table.Cell>
     );
   }
