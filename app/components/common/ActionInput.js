@@ -25,6 +25,8 @@ export default class ActionInput extends Component {
 
   static defaultProps = {
     name: undefined,
+    value: undefined,
+    handlerParams: [],
     label: null,
     error: false,
     useFormInput: false,
@@ -41,13 +43,11 @@ export default class ActionInput extends Component {
 
   clickHandler = () => {
     // This will take the handlerParams params and pass them to the onClick function
-    const handlerParams = this.props.handlerParams || [];
-    this.props.onClick(...handlerParams);
+    this.props.onClick(...this.props.handlerParams);
   };
 
   changeHandler = (event, data) => {
-    data.handlerParams = this.props.handlerParams;
-    this.props.onChange(event, data);
+    this.props.onChange(event, data, this.props.handlerParams);
   };
 
   render() {

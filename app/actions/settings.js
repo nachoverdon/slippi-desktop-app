@@ -204,15 +204,11 @@ export function openDolphin() {
   };
 }
 
-export function saveSettings(event, data) {
-  return (dispatch, getState) => {
+export function saveSettings(event, data, handlerParams) {
+  return () => {
 
-    if (data.handlerParams.length > 0) {
-      const fieldName = data.handlerParams[0];
-
-      getState().settings.settings[fieldName] = data.value;
-      electronSettings.set('settings.' + fieldName, data.value);
-
+    if (handlerParams.length > 0) {
+      electronSettings.set(`settings.${handlerParams[0]}`, data.value);
     }
 
   }

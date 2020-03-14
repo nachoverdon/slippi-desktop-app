@@ -27,6 +27,7 @@ export default class Settings extends Component {
     browseFile: PropTypes.func.isRequired,
     validateISO: PropTypes.func.isRequired,
     openDolphin: PropTypes.func.isRequired,
+    saveSettings: PropTypes.func.isRequired,
 
     // error actions
     dismissError: PropTypes.func.isRequired,
@@ -302,7 +303,7 @@ export default class Settings extends Component {
 
     inputs.push([
       this.renderObsPathSettings(),
-      this.renderObsWebsocketSettings()
+      this.renderObsWebsocketSettings(),
     ]);
 
     if (_.isEmpty(inputs)) {
@@ -352,23 +353,21 @@ export default class Settings extends Component {
       <div key="obsWebSocketSettings">
         <SpacedGroup customColumns="1fr 1fr 1fr">
           <ActionInput
-            showLabelDescription={false}
+            showLabelDescription={true}
             defaultValue={store.settings.obsScene}
             showButton={false}
             label="Scene"
             description="Name of the OBS scene"
-            showLabelDescription={true}
             readOnly={false}
             onChange={this.props.saveSettings}
             handlerParams={['obsScene']}
           />
           <ActionInput
-            showLabelDescription={false}
+            showLabelDescription={true}
             defaultValue={store.settings.obsPort}
             showButton={false}
             label="Port"
             description="OBS WebSocket port"
-            showLabelDescription={true}
             readOnly={false}
             onChange={this.props.saveSettings}
             handlerParams={['obsPort']}
@@ -376,12 +375,11 @@ export default class Settings extends Component {
             minMax={{min: 0, max: 65535}}
           />
           <ActionInput
-            showLabelDescription={false}
+            showLabelDescription={true}
             defaultValue={store.settings.obsPassword}
             showButton={false}
             label="Password"
             description="OBS WebSocket password"
-            showLabelDescription={true}
             inputType="password"
             readOnly={false}
             onChange={this.props.saveSettings}

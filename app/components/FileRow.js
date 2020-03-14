@@ -5,16 +5,16 @@ import { Link } from 'react-router-dom';
 import { Button, Table, Icon } from 'semantic-ui-react';
 import { stages as stageUtils } from 'slp-parser-js';
 import classNames from 'classnames';
+import electronSettings from 'electron-settings';
 
 import styles from './FileRow.scss';
 import SpacedGroup from './common/SpacedGroup';
 import PlayerChiclet from './common/PlayerChiclet';
 import * as timeUtils from '../utils/time';
-import electronSettings from 'electron-settings';
 
 const path = require('path');
 const process = require('process');
-const child_process = require('child_process');
+const childProcess = require('child_process');
 
 export default class FileRow extends Component {
   static propTypes = {
@@ -72,7 +72,7 @@ export default class FileRow extends Component {
     try {
       process.chdir(path.dirname(obsPath));
 
-      const obsProcess = child_process.execFile(obsPath);
+      const obsProcess = childProcess.execFile(obsPath);
 
       process.chdir(currentWorkingDirectory);
 
